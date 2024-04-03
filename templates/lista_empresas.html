@@ -4,13 +4,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ documentos[0].Nome_Companhia }} | {{ site_title }} </title>
+    <title>Lista de empresas | {{ site_title }} </title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/output.css') }}">
 </head>
 <body class="bg-emerald-100 text-emerald-900">
+
     <!-- BARRA DE NAVEGAÇÃO -->
     <div class="navbar bg-emerald-800 text-emerald-50">
         <div class="navbar-start">
@@ -52,19 +53,15 @@
 
     <!-- CONTEÚDO -->
     <div class="max-w-4xl mx-auto px-4 py-8">
-        <h1 class="text-4xl font-serif font-bold mb-1.5 mt-16">{{ documentos[0].Nome_Companhia }}</h1>
-        <div class="badge badge-outline">Código CVM: {{ documentos[0].Codigo_CVM }}</div>
-        <div class="badge badge-outline">CNPJ: {{ documentos[0].CNPJ_Companhia }}</div>
-
-        <div class="mt-10">
-            <h2 class="text-xl font-semibold">Áreas de Atuação:</h2>
-            <ul class="list-disc list-inside space-y-2 mt-2 text-sm">
-                {% for atividade in documentos[0].AtividadesEmissorControladas.lista_atividades %}
-                <li>{{ atividade }}</li>
+        <h1 class="text-4xl font-serif font-bold mb-1.5 mt-16">Empresas Cadastradas</h1>
+        <div class="badge badge-outline">Total de empresas: {{ empresas|length }}</div>
+        <div class="bg-emerald-50 shadow overflow-hidden rounded-md mt-16">
+            <ul class="divide-y divide-gray-200">
+                {% for empresa in empresas %}
+                <li class="px-6 py-4">
+                    <a href="/empresa/{{ empresa.Codigo_CVM }}" class="text-emerald-800 hover:text-emerald-950">{{ empresa.Nome_Companhia }}</a>
+                </li>
                 {% endfor %}
             </ul>
         </div>
     </div>
-    
-</body>
-</html>

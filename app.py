@@ -49,6 +49,12 @@ def empresa(codigo_cvm):
     else:
         abort(404)
 
+@app.route('/lista-empresas')
+def listar_empresas():
+    # Supondo que cada empresa tem um documento representativo mais recente com seu nome e Código CVM
+    empresas = list(collection.find().sort("Nome_Companhia", 1))
+    return render_template('lista_empresas.html', empresas=empresas)
+
 
 if __name__ == '__main__':
     app.run(debug=True)
