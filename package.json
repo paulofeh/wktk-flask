@@ -94,6 +94,7 @@
     "strip-ansi-cjs": "^6.0.1",
     "sucrase": "^3.35.0",
     "supports-preserve-symlinks-flag": "^1.0.0",
+    "tailwindcss-hero-patterns": "^0.1.2",
     "thenify": "^3.3.1",
     "thenify-all": "^1.6.0",
     "to-regex-range": "^5.0.1",
@@ -106,6 +107,7 @@
     "yaml": "^2.4.1"
   },
   "devDependencies": {
+    "@tailwindcss/typography": "^0.5.12",
     "autoprefixer": "^10.4.19",
     "daisyui": "^4.9.0",
     "postcss": "^8.4.38",
