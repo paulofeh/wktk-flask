@@ -1,0 +1,70 @@
+<!-- empresa.html -->
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ documentos[0].Nome_Companhia }} | {{ site_title }} </title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/output.css') }}">
+</head>
+<body class="bg-emerald-100 text-emerald-900">
+    <!-- BARRA DE NAVEGAÇÃO -->
+    <div class="navbar bg-emerald-800 text-emerald-50">
+        <div class="navbar-start">
+          <div class="dropdown">
+            <div tabindex="0" role="button" class="btn btn-ghost lg:hidden">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h8m-8 6h16" /></svg>
+            </div>
+            <ul tabindex="0" class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
+              <li><a>Lista de empresas</a></li>
+              <li>
+                <a>Sobre</a>
+                <ul class="p-2">
+                  <li><a>Informações</a></li>
+                  <li><a>Github</a></li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+          <a class="btn btn-ghost text-xl" href="/">{{ site_title }}</a>
+        </div>
+        <div class="navbar-center hidden lg:flex">
+          <ul class="menu menu-horizontal px-1">
+            <li><a>Lista de empresas</a></li>
+            <li>
+              <details>
+                <summary>Sobre</summary>
+                <ul class="p-2">
+                  <li><a>Informações</a></li>
+                  <li><a>Github</a></li>
+                </ul>
+              </details>
+            </li>
+          </ul>
+        </div>
+        <div class="navbar-end">
+          <a class="btn" href="/faq">FAQ</a>
+        </div>
+      </div>
+
+    <!-- CONTEÚDO -->
+    <div class="max-w-4xl mx-auto px-4 py-8">
+        <h1 class="text-4xl font-serif font-bold mb-1.5 mt-16">{{ documentos[0].Nome_Companhia }}</h1>
+        <div class="badge badge-outline">Código CVM: {{ documentos[0].Codigo_CVM }}</div>
+        <div class="badge badge-outline">CNPJ: {{ documentos[0].CNPJ_Companhia }}</div>
+
+        <div class="mt-10">
+            <h2 class="text-xl font-semibold">Áreas de Atuação:</h2>
+            <ul class="list-disc list-inside space-y-2 mt-2 text-sm">
+                {% for atividade in documentos[0].AtividadesEmissorControladas.lista_atividades %}
+                <li>{{ atividade }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+    
+</body>
+</html>

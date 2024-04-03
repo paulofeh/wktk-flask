@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, abort
 from pymongo import MongoClient
 from dotenv import load_dotenv
 import os
@@ -12,6 +12,13 @@ db = MongoClient(uri, ssl=True, tlsAllowInvalidCertificates=True).mjd_fehlauer
 collection = db['cvm']
 
 app = Flask(__name__)
+
+@app.context_processor
+def inject_site_metadata():
+    return dict(
+        site_title="Walk the Talk",
+        site_subtitle="O que as empresas dizem que fazem - e o que realmente fazem - em relação à pauta ESG"
+    )
 
 @app.route('/')
 def home():
@@ -32,6 +39,15 @@ def busca_empresas():
         return jsonify(suggestions)
     return jsonify([])
 
+
+@app.route('/empresa/<int:codigo_cvm>')
+def empresa(codigo_cvm):
+    documentos_empresa = list(collection.find({"Codigo_CVM": codigo_cvm}).sort("Data_Referencia", -1))
+    if documentos_empresa:
+        # Passa a lista de documentos para o template
+        return render_template('empresa.html', documentos=documentos_empresa)
+    else:
+        abort(404)
 
 
 if __name__ == '__main__':
