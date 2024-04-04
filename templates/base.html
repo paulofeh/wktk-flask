@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/output.css') }}">
+    <style>
+        .custom-placeholder::placeholder {
+            color: #022C22; /* Esta é a cor correspondente a text-emerald-950 no Tailwind CSS */
+            opacity: 1; /* Necessário para garantir a consistência da cor em todos os navegadores */
+        }
+    </style>
+</head>
+
+{% block nav %}
+    <!-- Bloco padrão vazio, pode ser sobrescrito pelas páginas internas -->
+{% endblock %}
+
+<main class="bg-emerald-100 text-emerald-900">
+    {% block content %}
+    <!-- Conteúdo específico da página -->
+    {% endblock %}
+</main>
+
+{% include 'footer.html' %}
+
+{% block scripts %}
+    <!-- Bloco padrão vazio, pode ser sobrescrito pelas páginas internas -->
+{% endblock %}
+
+</body>
+</html>

@@ -1,293 +1,240 @@
-<!-- empresa.html -->
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ documentos[0].Nome_Companhia }} | {{ site_title }} </title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/output.css') }}">
-</head>
-<body class="bg-emerald-100 text-emerald-900">
-    <!-- BARRA DE NAVEGAÇÃO -->
-    <div class="navbar bg-emerald-800 text-emerald-50">
-        <div class="navbar-start">
-          <div class="dropdown">
-            <div tabindex="0" role="button" class="btn btn-ghost lg:hidden">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h8m-8 6h16" /></svg>
-            </div>
-            <ul tabindex="0" class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
-              <li><a href="/lista-empresas">Lista de empresas</a></li>
-              <li>
-                <a>Sobre</a>
-                <ul class="p-2">
-                  <li><a>Informações</a></li>
-                  <li><a>Github</a></li>
-                </ul>
-              </li>
-            </ul>
-          </div>
-          <a class="btn btn-ghost font-serif text-xl" href="/">{{ site_title }}</a>
-        </div>
-        <div class="navbar-center hidden lg:flex">
-          <ul class="menu menu-horizontal px-1">
-            <li><a href="/lista-empresas">Lista de empresas</a></li>
-            <li>
-              <details>
-                <summary>Sobre</summary>
-                <ul class="p-2">
-                  <li><a>Informações</a></li>
-                  <li><a>Github</a></li>
-                </ul>
-              </details>
-            </li>
-          </ul>
-        </div>
-        <div class="navbar-end">
-          <a class="btn" href="/faq">FAQ</a>
-        </div>
-      </div>
+{% extends 'base.html' %}
 
-    <!-- CONTEÚDO -->
-    <!-- INFOS TOPO -->
-    <div class="max-w-4xl mx-auto px-4 py-8">
-      <div class="my-12">
-        <h1 class="text-4xl md:text-6xl font-serif font-bold mb-2.5 mt-16">{{ documentos[0].Nome_Companhia }}</h1>
-        <div class="badge badge-outline badge-lg mb-1">Código CVM: {{ documentos[0].Codigo_CVM }}</div>
-        <div class="badge badge-outline badge-lg mb-1">CNPJ: {{ documentos[0].CNPJ_Companhia }}</div>
-        <div class="badge badge-outline badge-lg mb-1">Data de referência: {{ documentos[0].Data_Referencia.strftime('%d/%m/%Y') }}</div>
-        <div class="badge badge-outline badge-lg mb-1">Data de recebimento: {{ documentos[0].Data_Recebimento.strftime('%d/%m/%Y') }}</div>
-        <div class="badge badge-outline badge-lg mb-1">Versão: {{ documentos[0].Versao }}</div>
-      </div>
+{% block title %}{{ documentos[0].Nome_Companhia }} | {{ site_title }}{% endblock %}
 
-        <!-- INFORMAÇÕES ESSENCIAIS -->
-        <h2 class="text-3xl md:text-4xl font-serif font-bold mt-8 mb-4">Dados gerais</h2>
-        <div class="bg-gradient-to-br from-emerald-200 to-emerald-100 shadow overflow-hidden rounded-md mt-4  px-6 py-8">
-          <div>
+{% block nav %}
+{% include 'header.html' %}
+{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto px-4 py-8">
+
+  <!-- INFOS TOPO -->
+  <div class="my-12">
+      <h1 class="text-4xl md:text-6xl font-serif font-bold mb-2.5 mt-16">{{ documentos[0].Nome_Companhia }}</h1>
+      <div class="badge badge-outline badge-lg mb-1">Código CVM: {{ documentos[0].Codigo_CVM }}</div>
+      <div class="badge badge-outline badge-lg mb-1">CNPJ: {{ documentos[0].CNPJ_Companhia }}</div>
+      <div class="badge badge-outline badge-lg mb-1">Data de referência: {{ documentos[0].Data_Referencia.strftime('%d/%m/%Y') }}</div>
+      <div class="badge badge-outline badge-lg mb-1">Data de recebimento: {{ documentos[0].Data_Recebimento.strftime('%d/%m/%Y') }}</div>
+      <div class="badge badge-outline badge-lg mb-1">Versão: {{ documentos[0].Versao }}</div>
+  </div>
+
+  <!-- INFORMAÇÕES ESSENCIAIS -->
+  <h2 class="text-3xl md:text-4xl font-serif font-bold mt-8 mb-4">Dados gerais</h2>
+  <div class="bg-gradient-to-br from-emerald-200 to-emerald-100 shadow overflow-hidden rounded-md mt-4 px-6 py-8">
+      <div>
           <h3 class="text-xl font-semibold">Histórico</h3>
           <p>{{ documentos[0].HistoricoEmissor.resumo_historico }}</p>
-        </div>
-        <div class="mt-8">
+      </div>
+      <div class="mt-8">
           <h3 class="text-xl font-semibold">Áreas de Atuação</h3>
-            <ul class="list-disc list-outside space-y-2 mt-2 px-5">
-                {% for atividade in documentos[0].AtividadesEmissorControladas.lista_atividades %}
-                <li>{{ atividade }}</li>
-                {% endfor %}
-            </ul>
-          </div>
-        </div>
-
-<!-- BLOCO INFORMAÇÕES ASG -->
-<h2 class="text-3xl md:text-4xl font-serif font-bold mt-12 mb-4">Questionário ESG</h2>
-<div class="bg-gradient-to-br from-emerald-200 to-emerald-100 shadow overflow-hidden rounded-md mt-4 px-6 py-8">
-
-  <!-- Divulgação ESG -->
-  <p class="font-bold mt-6">A empresa divulga informações ASG em relatório anual ou em documento específico para esta finalidade?</p>
-  <p>{{ '✅ Sim' if documentos[0].InfoASG.divulga_esg else '⛔ Não' }}</p>
-
-  <!-- URL Relatório -->
-  {% if documentos[0].InfoASG.url_relatorio %}
-  <p class="font-bold mt-6">Qual a URL para o acesso ao relatório?</p>
-      <p>{% for url in documentos[0].InfoASG.url_relatorio %}
-        <a href="{{ url }}" class="text-blue-500 hover:underline">{{ url }}</a>
-      {% endfor %}
-    </p>
-  {% endif %}
-
-  <!-- Matriz Material -->
-  <p class="font-bold mt-6">A empresa considera uma matriz de materialidade ou indicadores-chave de desempenho ASG?</p>
-  <p>{{ '✅ Sim' if documentos[0].InfoASG.matriz_material else '⛔ Não' }}</p>
-
-  <!-- Matriz de Indicadores -->
-  {% if documentos[0].InfoASG.matriz_indicadores %}
-  <p class="font-bold mt-6">Caso a resposta seja positiva, quais indicadores são mencionados?</p>
-  <ul class="list-disc list-outside space-y-2 mt-2 px-5">
-    {% for indicador in documentos[0].InfoASG.matriz_indicadores %}
-      <li>{{ indicador }}</li>
-    {% endfor %}
-  </ul>
-  {% endif %}
-
-  <!-- Objetivos de Desenvolvimento Sustentável (ODS) -->
-  <p class="font-bold mt-6">A empresa leva em consideração os Objetivos de Desenvolvimento Sustentável (ODS) estabelecidos pela ONU?</p>
-  <p>{{ '✅ Sim' if documentos[0].InfoASG.ods else '⛔ Não' }}</p>
-
-  {% if documentos[0].InfoASG.lista_ods %}
-  <p class="font-bold mt-6">Caso a resposta seja positiva, quais os ODS mencionados no texto?</p>
-  <ul class="list-disc list-outside space-y-2 mt-2 px-5">
-      {% for ods in documentos[0].InfoASG.lista_ods %}
-          <li>{{ ods }} - {{ ods_descricao.get(ods, 'Descrição não disponível') }}</li>
-      {% endfor %}
-  </ul>
-  {% endif %}
-  
-  <!-- TCFD -->
-  <p class="font-bold mt-6">A empresa considera recomendações da Força-Tarefa para Divulgações Financeiras Relacionadas às Mudanças Climáticas (TCFD)?</p>
-  <p>{{ '✅ Sim' if documentos[0].InfoASG.tcfd else '⛔ Não' }}</p>
-
-  <!-- Divulgação GEE -->
-  <p class="font-bold mt-6">A empresa divulga inventários de emissão de gases do efeito estufa (GEE)?</p>
-  <p>{{ '✅ Sim' if documentos[0].InfoASG.divulga_gee else '⛔ Não' }}</p>
-
-  {% if documentos[0].InfoASG.escopos_gee %}
-  <p class="font-bold mt-6">Caso a resposta seja positiva, quais os escopos informados?</p>
-  <ul class="list-disc list-outside space-y-2 mt-2 px-5">
-    {% for escopo in documentos[0].InfoASG.escopos_gee %}
-        <li>{{ escopo }} - {{ escopos.get(escopo, 'Descrição não disponível') }}</li>
-    {% endfor %}
-</ul>
-  {% endif %}
-
-  <!-- URL GEE -->
-  {% if documentos[0].InfoASG.url_gee %}
-  <p class="font-bold mt-6">Qual a URL para o acesso ao inventário de emissões?</p>
-      <p>{% for url in documentos[0].InfoASG.url_gee %}
-        <a href="{{ url }}" class="text-blue-500 hover:underline">{{ url }}</a>
-      {% endfor %}
-    </p>
-  {% endif %}
-
-  <!-- Lista de Mitigação -->
-  {% if documentos[0].InfoASG.lista_mitigacao %}
-  <p class="font-bold mt-6">Quais os principais compromissos assumidos pela empresa em relação à mitigação das mudanças climáticas?</p>
-  <ul class="list-disc list-outside space-y-2 mt-2 px-5">
-    {% for mitigacao in documentos[0].InfoASG.lista_mitigacao %}
-      <li>{{ mitigacao }}</li>
-    {% endfor %}
-  </ul>
-  {% endif %}
-
-  <!-- Lista de Gênero, Raça e Diversidade -->
-  {% if documentos[0].InfoASG.lista_diversidade %}
-  <p class="font-bold mt-6">Quais os principais compromissos assumidos pela empresa em relação a questões de Gênero, Raça e Diversidade?</p>
-  <ul class="list-disc list-outside space-y-2 mt-2 px-5">
-    {% for item in documentos[0].InfoASG.lista_diversidade %}
-      <li>{{ item }}</li>
-    {% endfor %}
-  </ul>
-  {% endif %}
-
-  <!-- Pratique ou explique -->
-  {% if documentos[0].InfoASG.explique %}
-  <p class="font-bold mt-6">Quais são as principais explicações da empresa para a não adoção de alguma das práticas acima?</p>
-  <p>{{ documentos[0].InfoASG.explique }}</p>
-  {% endif %}
-
-  <!-- Oportunidades -->
-  {% if documentos[0].PlanoNegocios.oportunidades %}
-  <p class="font-bold mt-6">Quais são as principais oportunidades relacionadas a questões ASG inseridas no plano de negócios?</p>
-  <p>{{ documentos[0].PlanoNegocios.oportunidades }}</p>
-  {% endif %}
-
-  <!-- Efeitos -->
-  {% if documentos[0].EfeitosRegulacaoEstatal.efeitos_regulacao %}
-  <p class="font-bold mt-6">Quais são os principais aspectos relacionados ao cumprimento de obrigações legais ligadas a questões ambientais e sociais?</p>
-  <p>{{ documentos[0].EfeitosRegulacaoEstatal.efeitos_regulacao }}</p>
-  {% endif %}
-  
+          <ul class="list-disc list-outside space-y-2 mt-2 px-5">
+              {% for atividade in documentos[0].AtividadesEmissorControladas.lista_atividades %}
+              <li>{{ atividade }}</li>
+              {% endfor %}
+          </ul>
+      </div>
+  </div>
 </div>
 
+<!-- BLOCO INFORMAÇÕES ASG -->
+<div class="max-w-4xl mx-auto px-4 py-8">
+  <h2 class="text-3xl md:text-4xl font-serif font-bold my-4">Questionário ESG</h2>
+  <div class="bg-gradient-to-br from-emerald-200 to-emerald-100 shadow overflow-hidden rounded-md mt-4 px-6 py-8">
+    
+    <!-- Divulgação ESG -->
+    <p class="font-bold mt-6">A empresa divulga informações ASG em relatório anual ou em documento específico para esta finalidade?</p>
+    <p>{{ '✅ Sim' if documentos[0].InfoASG.divulga_esg else '⛔ Não' }}</p>
 
-<h2 class="text-3xl md:text-4xl font-serif font-bold mt-12 mb-4">Composição dos órgãos administrativos</h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <!-- PICTOGRAMAS RACIAIS / ÓRGÃOS ADMINISTRATIVOS -->
-        <div class="px-6 py-4 bg-gradient-to-br from-emerald-200 to-emerald-100 shadow overflow-hidden rounded-md">
-          <h3 class="text-xl font-semibold">Distribuição por Cor/Raça:</h3>
-          <div class="badge badge-outline badge-sm">🟨 Amarelo</div>
-          <div class="badge badge-outline badge-sm">⬜ Branco</div>
-          <div class="badge badge-outline badge-sm">🟥 Indígena</div>
-          <div class="badge badge-outline badge-sm">🟫 Pardo</div>
-          <div class="badge badge-outline badge-sm">⬛ Preto</div>
-          <div class="badge badge-outline badge-sm">🔵 Outro</div>
-          <div class="badge badge-outline badge-sm">❔ Não respondeu</div>
-          {% for orgao, pictograma in pictogramas_cor_raca.items() %}
-          <div class="mt-4">
-              <h4 class="font-semibold">{{ orgao }}</h4>
-              <p>{{ pictograma | safe }}</p>
-          </div>
-          {% endfor %}
-        </div>
+    <!-- URL Relatório -->
+    {% if documentos[0].InfoASG.url_relatorio %}
+    <p class="font-bold mt-6">Qual a URL para o acesso ao relatório?</p>
+    <p>{% for url in documentos[0].InfoASG.url_relatorio %}
+      <a href="{{ url }}" class="text-blue-500 hover:underline">{{ url }}</a>
+      {% endfor %}
+    </p>
+    {% endif %}
 
-        <!-- PICTOGRAMAS POR GÊNERO / ÓRGÃOS ADMINISTRATIVOS -->
-        <div class="px-6 py-4 bg-gradient-to-br from-emerald-200 to-emerald-100 shadow overflow-hidden rounded-md">
-          <h3 class="text-xl font-semibold">Distribuição por Gênero:</h3>
-          <div class="badge badge-outline badge-sm">🔴 Feminino</div>
-          <div class="badge badge-outline badge-sm">🔵 Masculino</div>
-          <div class="badge badge-outline badge-sm">🟣 Não-binário</div>
-          <div class="badge badge-outline badge-sm">⚪ Outro</div>
-          <div class="badge badge-outline badge-sm">❔ Não respondeu</div>
-          {% for orgao, pictograma in pictogramas_genero.items() %}
-          <div class="mt-4">
-              <h4 class="font-semibold">{{ orgao }}</h4>
-              <p>{{ pictograma | safe }}</p>
-          </div>
-          {% endfor %}
-        </div>
+    <!-- Matriz Material -->
+    <p class="font-bold mt-6">A empresa considera uma matriz de materialidade ou indicadores-chave de desempenho ASG?</p>
+    <p>{{ '✅ Sim' if documentos[0].InfoASG.matriz_material else '⛔ Não' }}</p>
+
+    <!-- Matriz de Indicadores -->
+    {% if documentos[0].InfoASG.matriz_indicadores %}
+    <p class="font-bold mt-6">Caso a resposta seja positiva, quais indicadores são mencionados?</p>
+    <ul class="list-disc list-outside space-y-2 mt-2 px-5">
+      {% for indicador in documentos[0].InfoASG.matriz_indicadores %}
+      <li>{{ indicador }}</li>
+      {% endfor %}
+    </ul>
+    {% endif %}
+
+    <!-- Objetivos de Desenvolvimento Sustentável (ODS) -->
+    <p class="font-bold mt-6">A empresa leva em consideração os Objetivos de Desenvolvimento Sustentável (ODS) estabelecidos pela ONU?</p>
+    <p>{{ '✅ Sim' if documentos[0].InfoASG.ods else '⛔ Não' }}</p>
+    {% if documentos[0].InfoASG.lista_ods %}
+    <p class="font-bold mt-6">Caso a resposta seja positiva, quais os ODS mencionados no texto?</p>
+    <ul class="list-disc list-outside space-y-2 mt-2 px-5">
+      {% for ods in documentos[0].InfoASG.lista_ods %}
+      <li>{{ ods }} - {{ ods_descricao.get(ods, 'Descrição não disponível') }}</li>
+      {% endfor %}
+    </ul>
+    {% endif %}
+  
+    <!-- TCFD -->
+    <p class="font-bold mt-6">A empresa considera recomendações da Força-Tarefa para Divulgações Financeiras Relacionadas às Mudanças Climáticas (TCFD)?</p>
+    <p>{{ '✅ Sim' if documentos[0].InfoASG.tcfd else '⛔ Não' }}</p>
+
+    <!-- Divulgação GEE -->
+    <p class="font-bold mt-6">A empresa divulga inventários de emissão de gases do efeito estufa (GEE)?</p>
+    <p>{{ '✅ Sim' if documentos[0].InfoASG.divulga_gee else '⛔ Não' }}</p>
+    {% if documentos[0].InfoASG.escopos_gee %}
+    <p class="font-bold mt-6">Caso a resposta seja positiva, quais os escopos informados?</p>
+    <ul class="list-disc list-outside space-y-2 mt-2 px-5">
+      {% for escopo in documentos[0].InfoASG.escopos_gee %}
+      <li>{{ escopo }} - {{ escopos.get(escopo, 'Descrição não disponível') }}</li>
+      {% endfor %}
+    </ul>
+    {% endif %}
+
+    <!-- URL GEE -->
+    {% if documentos[0].InfoASG.url_gee %}
+    <p class="font-bold mt-6">Qual a URL para o acesso ao inventário de emissões?</p>
+    <p>{% for url in documentos[0].InfoASG.url_gee %}
+      <a href="{{ url }}" class="text-blue-500 hover:underline">{{ url }}</a>
+      {% endfor %}
+    </p>
+    {% endif %}
+
+    <!-- Lista de Mitigação -->
+    {% if documentos[0].InfoASG.lista_mitigacao %}
+    <p class="font-bold mt-6">Quais os principais compromissos assumidos pela empresa em relação à mitigação das mudanças climáticas?</p>
+    <ul class="list-disc list-outside space-y-2 mt-2 px-5">
+      {% for mitigacao in documentos[0].InfoASG.lista_mitigacao %}
+      <li>{{ mitigacao }}</li>
+      {% endfor %}
+    </ul>
+    {% endif %}
+
+    <!-- Lista de Gênero, Raça e Diversidade -->
+    {% if documentos[0].InfoASG.lista_diversidade %}
+    <p class="font-bold mt-6">Quais os principais compromissos assumidos pela empresa em relação a questões de Gênero, Raça e Diversidade?</p>
+    <ul class="list-disc list-outside space-y-2 mt-2 px-5">
+      {% for item in documentos[0].InfoASG.lista_diversidade %}
+      <li>{{ item }}</li>
+      {% endfor %}
+    </ul>
+    {% endif %}
+
+    <!-- Pratique ou explique -->
+    {% if documentos[0].InfoASG.explique %}
+    <p class="font-bold mt-6">Quais são as principais explicações da empresa para a não adoção de alguma das práticas acima?</p>
+    <p>{{ documentos[0].InfoASG.explique }}</p>
+    {% endif %}
+
+    <!-- Oportunidades -->
+    {% if documentos[0].PlanoNegocios.oportunidades %}
+    <p class="font-bold mt-6">Quais são as principais oportunidades relacionadas a questões ASG inseridas no plano de negócios?</p>
+    <p>{{ documentos[0].PlanoNegocios.oportunidades }}</p>
+    {% endif %}
+
+    <!-- Efeitos -->
+    {% if documentos[0].EfeitosRegulacaoEstatal.efeitos_regulacao %}
+    <p class="font-bold mt-6">Quais são os principais aspectos relacionados ao cumprimento de obrigações legais ligadas a questões ambientais e sociais?</p>
+    <p>{{ documentos[0].EfeitosRegulacaoEstatal.efeitos_regulacao }}</p>
+    {% endif %}
+  </div>
+</div>
+
+<!-- Composição dos órgãos administrativos e quadro de funcionários -->
+<div class="max-w-4xl mx-auto px-4 pt-8 pb-24">
+  <h2 class="text-3xl md:text-4xl font-serif font-bold my-4">Composição dos órgãos administrativos</h2>
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div class="px-6 py-4 bg-gradient-to-br from-emerald-200 to-emerald-100 shadow overflow-hidden rounded-md">
+      <h3 class="text-xl font-semibold">Distribuição por Cor/Raça:</h3>
+      <div class="badge badge-outline badge-sm">🟨 Amarelo</div>
+      <div class="badge badge-outline badge-sm">⬜ Branco</div>
+      <div class="badge badge-outline badge-sm">🟥 Indígena</div>
+      <div class="badge badge-outline badge-sm">🟫 Pardo</div>
+      <div class="badge badge-outline badge-sm">⬛ Preto</div>
+      <div class="badge badge-outline badge-sm">🔵 Outro</div>
+      <div class="badge badge-outline badge-sm">❔ Não respondeu</div>
+      {% for orgao, pictograma in pictogramas_cor_raca.items() %}
+      <div class="mt-4">
+        <h4 class="font-semibold">{{ orgao }}</h4>
+        <p>{{ pictograma | safe }}</p>
       </div>
-
-      <h2 class="text-3xl md:text-4xl font-serif font-bold mt-12 mb-4">Composição do quadro de funcionários</h2>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-      <!-- PICTOGRAMAS RACIAIS / FUNCIONÁRIOS -->
-      <div class="px-6 py-4 bg-gradient-to-br from-emerald-200 to-emerald-100 shadow overflow-hidden rounded-md">
-        <h3 class="text-xl font-semibold">Distribuição por Cor/Raça (%):</h3>
-        <div class="badge badge-outline badge-sm">🟨 Amarelo</div>
-        <div class="badge badge-outline badge-sm">⬜ Branco</div>
-        <div class="badge badge-outline badge-sm">🟥 Indígena</div>
-        <div class="badge badge-outline badge-sm">🟫 Pardo</div>
-        <div class="badge badge-outline badge-sm">⬛ Preto</div>
-        <div class="badge badge-outline badge-sm">🔵 Outro</div>
-        <div class="badge badge-outline badge-sm">❔ Não respondeu</div>
-        {% for descricao, dados in pictogramas_rh_cor_raca.items() %}
-    <h4 class="font-semibold mt-4">{{ descricao }} (Total: {{ dados.total }})</h4>
-    <p>{{ dados.pictograma }}</p>
-{% endfor %}
+      {% endfor %}
+    </div>
+    <div class="px-6 py-4 bg-gradient-to-br from-emerald-200 to-emerald-100 shadow overflow-hidden rounded-md">
+      <h3 class="text-xl font-semibold">Distribuição por Gênero:</h3>
+      <div class="badge badge-outline badge-sm">🔴 Feminino</div>
+      <div class="badge badge-outline badge-sm">🔵 Masculino</div>
+      <div class="badge badge-outline badge-sm">🟣 Não-binário</div>
+      <div class="badge badge-outline badge-sm">⚪ Outro</div>
+      <div class="badge badge-outline badge-sm">❔ Não respondeu</div>
+      {% for orgao, pictograma in pictogramas_genero.items() %}
+      <div class="mt-4">
+        <h4 class="font-semibold">{{ orgao }}</h4>
+        <p>{{ pictograma | safe }}</p>
       </div>
-
-      <!-- PICTOGRAMAS POR GÊNERO / FUNCIONÁRIOS -->
-      <div class="px-6 py-4 bg-gradient-to-br from-emerald-200 to-emerald-100 shadow overflow-hidden rounded-md">
-        <h3 class="text-xl font-semibold">Distribuição por Gênero (%):</h3>
-        <div class="badge badge-outline badge-sm">🔴 Feminino</div>
-        <div class="badge badge-outline badge-sm">🔵 Masculino</div>
-        <div class="badge badge-outline badge-sm">🟣 Não-binário</div>
-        <div class="badge badge-outline badge-sm">⚪ Outro</div>
-        <div class="badge badge-outline badge-sm">❔ Não respondeu</div>
-        {% for descricao, dados in pictogramas_rh_genero.items() %}
-            <h4 class="font-semibold mt-4">{{ descricao }} (Total: {{ dados.total }})</h4>
-            <p>{{ dados.pictograma }}</p>
-        {% endfor %}
-      </div>
-
-      <!-- PICTOGRAMAS POR FAIXA ETÁRIA / FUNCIONÁRIOS -->
-      <div class="px-6 py-4 bg-gradient-to-br from-emerald-200 to-emerald-100 shadow overflow-hidden rounded-md">
-        <h3 class="text-xl font-semibold">Distribuição por Faixa Etária (%):</h3>
-        <div class="badge badge-outline badge-sm">🐣 Abaixo de 30</div>
-        <div class="badge badge-outline badge-sm">🧑 30 a 50</div>
-        <div class="badge badge-outline badge-sm">🧓 Acima de 50</div>
-        {% for descricao, dados in pictogramas_rh_idade.items() %}
-            <h4 class="font-semibold mt-4">{{ descricao }} (Total: {{ dados.total }})</h4>
-            <p>{{ dados.pictograma }}</p>
-        {% endfor %}
-      </div>
-
-      <!-- PICTOGRAMAS POR REGIÃO / FUNCIONÁRIOS -->
-      <div class="px-6 py-4 bg-gradient-to-br from-emerald-200 to-emerald-100 shadow overflow-hidden rounded-md">
-        <h3 class="text-xl font-semibold">Distribuição por Região Geográfica (%):</h3>
-        <div class="badge badge-outline badge-sm">🟦 Norte</div>
-        <div class="badge badge-outline badge-sm">🟩 Nordeste</div>
-        <div class="badge badge-outline badge-sm">🟨 Centro-Oeste</div>
-        <div class="badge badge-outline badge-sm">🟪 Sudeste</div>
-        <div class="badge badge-outline badge-sm">🟥 Sul</div>
-        <div class="badge badge-outline badge-sm">🌍 Exterior</div>
-        {% for descricao, dados in pictogramas_rh_regiao.items() %}
-            <h4 class="font-semibold mt-4">{{ descricao }} (Total: {{ dados.total }})</h4>
-            <p>{{ dados.pictograma }}</p>
-        {% endfor %}
-      </div>
-
-
+      {% endfor %}
+    </div>
+  </div>
+  
+  <h2 class="text-3xl md:text-4xl font-serif font-bold my-12 mb-4">Composição do quadro de funcionários</h2>
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div class="px-6 py-4 bg-gradient-to-br from-emerald-200 to-emerald-100 shadow overflow-hidden rounded-md">
+      <h3 class="text-xl font-semibold">Distribuição por Cor/Raça (%):</h3>
+      <div class="badge badge-outline badge-sm">🟨 Amarelo</div>
+      <div class="badge badge-outline badge-sm">⬜ Branco</div>
+      <div class="badge badge-outline badge-sm">🟥 Indígena</div>
+      <div class="badge badge-outline badge-sm">🟫 Pardo</div>
+      <div class="badge badge-outline badge-sm">⬛ Preto</div>
+      <div class="badge badge-outline badge-sm">🔵 Outro</div>
+      <div class="badge badge-outline badge-sm">❔ Não respondeu</div>
+      {% for descricao, dados in pictogramas_rh_cor_raca.items() %}
+        <h4 class="font-semibold mt-4">{{ descricao }} (Total: {{ dados.total }})</h4>
+        <p>{{ dados.pictograma }}</p>
+      {% endfor %}
     </div>
 
-</body>
-</html>
+    <div class="px-6 py-4 bg-gradient-to-br from-emerald-200 to-emerald-100 shadow overflow-hidden rounded-md">
+      <h3 class="text-xl font-semibold">Distribuição por Gênero (%):</h3>
+      <div class="badge badge-outline badge-sm">🔴 Feminino</div>
+      <div class="badge badge-outline badge-sm">🔵 Masculino</div>
+      <div class="badge badge-outline badge-sm">🟣 Não-binário</div>
+      <div class="badge badge-outline badge-sm">⚪ Outro</div>
+      <div class="badge badge-outline badge-sm">❔ Não respondeu</div>
+      {% for descricao, dados in pictogramas_rh_genero.items() %}
+        <h4 class="font-semibold mt-4">{{ descricao }} (Total: {{ dados.total }})</h4>
+        <p>{{ dados.pictograma }}</p>
+      {% endfor %}
+    </div>
+
+    <div class="px-6 py-4 bg-gradient-to-br from-emerald-200 to-emerald-100 shadow overflow-hidden rounded-md">
+      <h3 class="text-xl font-semibold">Distribuição por Faixa Etária (%):</h3>
+      <div class="badge badge-outline badge-sm">🐣 Abaixo de 30</div>
+      <div class="badge badge-outline badge-sm">🧑 30 a 50</div>
+      <div class="badge badge-outline badge-sm">🧓 Acima de 50</div>
+      {% for descricao, dados in pictogramas_rh_idade.items() %}
+        <h4 class="font-semibold mt-4">{{ descricao }} (Total: {{ dados.total }})</h4>
+        <p>{{ dados.pictograma }}</p>
+      {% endfor %}
+    </div>
+
+    <div class="px-6 py-4 bg-gradient-to-br from-emerald-200 to-emerald-100 shadow overflow-hidden rounded-md">
+      <h3 class="text-xl font-semibold">Distribuição por Região Geográfica (%):</h3>
+      <div class="badge badge-outline badge-sm">🟦 Norte</div>
+      <div class="badge badge-outline badge-sm">🟩 Nordeste</div>
+      <div class="badge badge-outline badge-sm">🟨 Centro-Oeste</div>
+      <div class="badge badge-outline badge-sm">🟪 Sudeste</div>
+      <div class="badge badge-outline badge-sm">🟥 Sul</div>
+      <div class="badge badge-outline badge-sm">🌍 Exterior</div>
+      {% for descricao, dados in pictogramas_rh_regiao.items() %}
+        <h4 class="font-semibold mt-4">{{ descricao }} (Total: {{ dados.total }})</h4>
+        <p>{{ dados.pictograma }}</p>
+      {% endfor %}
+    </div>
+</div>
+{% endblock %}
