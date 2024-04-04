@@ -20,7 +20,7 @@ app = Flask(__name__)
 def inject_site_metadata():
     return dict(
         site_title="lupa(ESG)",
-        site_subtitle="Práticas ESG na ponta dos dados"
+        site_subtitle="Ambiente, Sociedade e Governança na ponta dos dados"
     )
 
 # Funções auxiliares
