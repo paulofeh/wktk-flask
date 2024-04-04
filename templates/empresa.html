@@ -53,12 +53,17 @@
     <!-- CONTEÚDO -->
     <!-- INFOS TOPO -->
     <div class="max-w-4xl mx-auto px-4 py-8">
-        <h1 class="text-6xl font-serif font-bold mb-1.5 mt-16">{{ documentos[0].Nome_Companhia }}</h1>
-        <div class="badge badge-outline badge-lg">Código CVM: {{ documentos[0].Codigo_CVM }}</div>
-        <div class="badge badge-outline badge-lg">CNPJ: {{ documentos[0].CNPJ_Companhia }}</div>
-        
+      <div class="my-12">
+        <h1 class="text-4xl md:text-6xl font-serif font-bold mb-2.5 mt-16">{{ documentos[0].Nome_Companhia }}</h1>
+        <div class="badge badge-outline badge-lg mb-1">Código CVM: {{ documentos[0].Codigo_CVM }}</div>
+        <div class="badge badge-outline badge-lg mb-1">CNPJ: {{ documentos[0].CNPJ_Companhia }}</div>
+        <div class="badge badge-outline badge-lg mb-1">Data de referência: {{ documentos[0].Data_Referencia.strftime('%d/%m/%Y') }}</div>
+        <div class="badge badge-outline badge-lg mb-1">Data de recebimento: {{ documentos[0].Data_Recebimento.strftime('%d/%m/%Y') }}</div>
+        <div class="badge badge-outline badge-lg mb-1">Versão: {{ documentos[0].Versao }}</div>
+      </div>
+
         <!-- INFORMAÇÕES ESSENCIAIS -->
-        <h2 class="text-4xl font-serif font-bold mb-1.5 mt-16">Informações essenciais</h2>
+        <h2 class="text-3xl md:text-4xl font-serif font-bold mt-8 mb-4">Dados gerais</h2>
         <div class="bg-gradient-to-br from-emerald-200 to-emerald-100 shadow overflow-hidden rounded-md mt-4  px-6 py-8">
           <div>
           <h3 class="text-xl font-semibold">Histórico</h3>
@@ -75,7 +80,7 @@
         </div>
 
 <!-- BLOCO INFORMAÇÕES ASG -->
-<h2 class="text-4xl font-serif font-bold mb-1.5 mt-16">Questionário ESG</h2>
+<h2 class="text-3xl md:text-4xl font-serif font-bold mt-12 mb-4">Questionário ESG</h2>
 <div class="bg-gradient-to-br from-emerald-200 to-emerald-100 shadow overflow-hidden rounded-md mt-4 px-6 py-8">
 
   <!-- Divulgação ESG -->
@@ -163,22 +168,32 @@
     {% endfor %}
   </ul>
   {% endif %}
-  
+
   <!-- Pratique ou explique -->
   {% if documentos[0].InfoASG.explique %}
   <p class="font-bold mt-6">Quais são as principais explicações da empresa para a não adoção de alguma das práticas acima?</p>
-  <ul class="list-disc list-outside space-y-2 mt-2 px-5">
-    {% for item in documentos[0].InfoASG.explique %}
-      <li>{{ item }}</li>
-    {% endfor %}
-  </ul>
+  <p>{{ documentos[0].InfoASG.explique }}</p>
   {% endif %}
+
+  <!-- Oportunidades -->
+  {% if documentos[0].PlanoNegocios.oportunidades %}
+  <p class="font-bold mt-6">Quais são as principais oportunidades relacionadas a questões ASG inseridas no plano de negócios?</p>
+  <p>{{ documentos[0].PlanoNegocios.oportunidades }}</p>
+  {% endif %}
+
+  <!-- Efeitos -->
+  {% if documentos[0].EfeitosRegulacaoEstatal.efeitos_regulacao %}
+  <p class="font-bold mt-6">Quais são os principais aspectos relacionados ao cumprimento de obrigações legais ligadas a questões ambientais e sociais?</p>
+  <p>{{ documentos[0].EfeitosRegulacaoEstatal.efeitos_regulacao }}</p>
+  {% endif %}
+  
 </div>
 
-        <h2 class="text-4xl font-serif font-bold mb-1.5 mt-16">Composição dos órgãos administrativos</h2>
-        <div class="flex flex-col md:flex-row gap-4">
+
+<h2 class="text-3xl md:text-4xl font-serif font-bold mt-12 mb-4">Composição dos órgãos administrativos</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <!-- PICTOGRAMAS RACIAIS / ÓRGÃOS ADMINISTRATIVOS -->
-        <div class="bg-gradient-to-br from-emerald-200 to-emerald-100 shadow overflow-hidden rounded-md mt-4 px-6 py-4 flex-1">
+        <div class="px-6 py-4 bg-gradient-to-br from-emerald-200 to-emerald-100 shadow overflow-hidden rounded-md">
           <h3 class="text-xl font-semibold">Distribuição por Cor/Raça:</h3>
           <div class="badge badge-outline badge-sm">🟨 Amarelo</div>
           <div class="badge badge-outline badge-sm">⬜ Branco</div>
@@ -196,7 +211,7 @@
         </div>
 
         <!-- PICTOGRAMAS POR GÊNERO / ÓRGÃOS ADMINISTRATIVOS -->
-        <div class="bg-gradient-to-br from-emerald-200 to-emerald-100 shadow overflow-hidden rounded-md mt-4 px-6 py-4 flex-1">
+        <div class="px-6 py-4 bg-gradient-to-br from-emerald-200 to-emerald-100 shadow overflow-hidden rounded-md">
           <h3 class="text-xl font-semibold">Distribuição por Gênero:</h3>
           <div class="badge badge-outline badge-sm">🔴 Feminino</div>
           <div class="badge badge-outline badge-sm">🔵 Masculino</div>
@@ -211,5 +226,68 @@
           {% endfor %}
         </div>
       </div>
+
+      <h2 class="text-3xl md:text-4xl font-serif font-bold mt-12 mb-4">Composição do quadro de funcionários</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <!-- PICTOGRAMAS RACIAIS / FUNCIONÁRIOS -->
+      <div class="px-6 py-4 bg-gradient-to-br from-emerald-200 to-emerald-100 shadow overflow-hidden rounded-md">
+        <h3 class="text-xl font-semibold">Distribuição por Cor/Raça (%):</h3>
+        <div class="badge badge-outline badge-sm">🟨 Amarelo</div>
+        <div class="badge badge-outline badge-sm">⬜ Branco</div>
+        <div class="badge badge-outline badge-sm">🟥 Indígena</div>
+        <div class="badge badge-outline badge-sm">🟫 Pardo</div>
+        <div class="badge badge-outline badge-sm">⬛ Preto</div>
+        <div class="badge badge-outline badge-sm">🔵 Outro</div>
+        <div class="badge badge-outline badge-sm">❔ Não respondeu</div>
+        {% for descricao, dados in pictogramas_rh_cor_raca.items() %}
+    <h4 class="font-semibold mt-4">{{ descricao }} (Total: {{ dados.total }})</h4>
+    <p>{{ dados.pictograma }}</p>
+{% endfor %}
+      </div>
+
+      <!-- PICTOGRAMAS POR GÊNERO / FUNCIONÁRIOS -->
+      <div class="px-6 py-4 bg-gradient-to-br from-emerald-200 to-emerald-100 shadow overflow-hidden rounded-md">
+        <h3 class="text-xl font-semibold">Distribuição por Gênero (%):</h3>
+        <div class="badge badge-outline badge-sm">🔴 Feminino</div>
+        <div class="badge badge-outline badge-sm">🔵 Masculino</div>
+        <div class="badge badge-outline badge-sm">🟣 Não-binário</div>
+        <div class="badge badge-outline badge-sm">⚪ Outro</div>
+        <div class="badge badge-outline badge-sm">❔ Não respondeu</div>
+        {% for descricao, dados in pictogramas_rh_genero.items() %}
+            <h4 class="font-semibold mt-4">{{ descricao }} (Total: {{ dados.total }})</h4>
+            <p>{{ dados.pictograma }}</p>
+        {% endfor %}
+      </div>
+
+      <!-- PICTOGRAMAS POR FAIXA ETÁRIA / FUNCIONÁRIOS -->
+      <div class="px-6 py-4 bg-gradient-to-br from-emerald-200 to-emerald-100 shadow overflow-hidden rounded-md">
+        <h3 class="text-xl font-semibold">Distribuição por Faixa Etária (%):</h3>
+        <div class="badge badge-outline badge-sm">🐣 Abaixo de 30</div>
+        <div class="badge badge-outline badge-sm">🧑 30 a 50</div>
+        <div class="badge badge-outline badge-sm">🧓 Acima de 50</div>
+        {% for descricao, dados in pictogramas_rh_idade.items() %}
+            <h4 class="font-semibold mt-4">{{ descricao }} (Total: {{ dados.total }})</h4>
+            <p>{{ dados.pictograma }}</p>
+        {% endfor %}
+      </div>
+
+      <!-- PICTOGRAMAS POR REGIÃO / FUNCIONÁRIOS -->
+      <div class="px-6 py-4 bg-gradient-to-br from-emerald-200 to-emerald-100 shadow overflow-hidden rounded-md">
+        <h3 class="text-xl font-semibold">Distribuição por Região Geográfica (%):</h3>
+        <div class="badge badge-outline badge-sm">🟦 Norte</div>
+        <div class="badge badge-outline badge-sm">🟩 Nordeste</div>
+        <div class="badge badge-outline badge-sm">🟨 Centro-Oeste</div>
+        <div class="badge badge-outline badge-sm">🟪 Sudeste</div>
+        <div class="badge badge-outline badge-sm">🟥 Sul</div>
+        <div class="badge badge-outline badge-sm">🌍 Exterior</div>
+        {% for descricao, dados in pictogramas_rh_regiao.items() %}
+            <h4 class="font-semibold mt-4">{{ descricao }} (Total: {{ dados.total }})</h4>
+            <p>{{ dados.pictograma }}</p>
+        {% endfor %}
+      </div>
+
+
+    </div>
+
 </body>
 </html>
