@@ -30,7 +30,7 @@
               </li>
             </ul>
           </div>
-          <a class="btn btn-ghost text-xl" href="/">{{ site_title }}</a>
+          <a class="btn btn-ghost font-serif last:text-xl" href="/">{{ site_title }}</a>
         </div>
         <div class="navbar-center hidden lg:flex">
           <ul class="menu menu-horizontal px-1">
@@ -53,10 +53,10 @@
 
     <!-- CONTEÚDO -->
     <div class="max-w-4xl mx-auto px-4 py-8">
-        <h1 class="text-4xl font-serif font-bold mb-1.5 mt-16">Empresas Cadastradas</h1>
+        <h1 class="text-6xl font-serif font-bold mb-1.5 mt-16">Empresas Cadastradas</h1>
         <div class="badge badge-outline">Total de empresas: {{ empresas|length }}</div>
-        <div class="bg-emerald-50 shadow overflow-hidden rounded-md mt-16">
-            <ul class="divide-y divide-gray-200">
+        <div class="bg-gradient-to-br from-emerald-200 to-emerald-100 shadow overflow-hidden rounded-md mt-16">
+            <ul class="divide-y divide-emerald-100">
                 {% for empresa in empresas %}
                 <li class="px-6 py-4">
                     <a href="/empresa/{{ empresa.Codigo_CVM }}" class="text-emerald-800 hover:text-emerald-950">{{ empresa.Nome_Companhia }}</a>
