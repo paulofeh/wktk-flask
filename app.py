@@ -42,8 +42,12 @@ def gerar_pictogramas_por_orgao(dados_orgao, emojis):
 def calcular_totais_e_proporcoes(dados_orgao):
     resultados = []
     for orgao in dados_orgao:
-        total = sum(int(valor.replace('.', '')) for chave, valor in orgao.items() if chave not in ['DescricaoInformacao', 'NaoSeAplica'])
-        proporcoes = {chave: int(valor.replace('.', '')) / total for chave, valor in orgao.items() if chave not in ['DescricaoInformacao', 'NaoSeAplica']}
+        # Calcular o total somente se o valor for numérico (após remover os pontos) e não estiver na lista de exceções
+        total = sum(int(valor.replace('.', '')) for chave, valor in orgao.items() if chave not in ['DescricaoInformacao', 'NaoSeAplica'] and valor.replace('.', '').isdigit())
+
+        # Calcular as proporções da mesma forma, garantindo que os valores sejam numéricos e válidos
+        proporcoes = {chave: int(valor.replace('.', '')) / total for chave, valor in orgao.items() if chave not in ['DescricaoInformacao', 'NaoSeAplica'] and valor.replace('.', '').isdigit() and total > 0}
+
         resultados.append({
             'descricao': orgao['DescricaoInformacao'],
             'total': total,
@@ -51,7 +55,7 @@ def calcular_totais_e_proporcoes(dados_orgao):
         })
     return resultados
 
-# Função para gerar pictogramas proporcionais a partir dos dados de raça/cor e gênero de funcionários
+# Função para gerar pictogramas proporcionais a partir dos dados dos funcionários
 def gerar_pictogramas_proporcionais(dados_orgao, emojis, max_emojis=100):
     pictogramas = {}
     dados_proporcoes = calcular_totais_e_proporcoes(dados_orgao)
@@ -59,7 +63,7 @@ def gerar_pictogramas_proporcionais(dados_orgao, emojis, max_emojis=100):
         pictograma = ""
         for categoria, proporcao in dado['proporcoes'].items():
             num_emojis = round(proporcao * max_emojis)
-            pictograma += (emojis.get(categoria, '❓') + " ") * num_emojis
+            pictograma += (emojis.get(categoria, '❔') + " ") * num_emojis
         if pictograma:
             pictogramas[dado['descricao']] = {
                 'pictograma': pictograma.strip(),
@@ -136,6 +140,10 @@ escopos = {
 @app.route('/')
 def home():
     return render_template('home.html')
+
+@app.route('/sobre')
+def sobre():
+    return render_template('sobre.html')
 
 @app.route('/busca')
 def busca_empresas():
