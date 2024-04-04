@@ -20,7 +20,7 @@ app = Flask(__name__)
 def inject_site_metadata():
     return dict(
         site_title="lupa(ESG)",
-        site_subtitle="O que as empresas dizem que fazem - e o que realmente fazem - em relação à pauta ESG"
+        site_subtitle="Práticas ESG na ponta dos dados"
     )
 
 # Funções auxiliares
