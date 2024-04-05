@@ -26,7 +26,6 @@ def openai_chat(openai_api_key, prompt, texto_pdf):
                 {"role": "user", "content": texto_pdf}])
 
     json_str = chat.choices[0].message.content
-    print(json_str)  # Adicione esta linha para verificar o conteúdo
 
     # Converter a string JSON em um dicionário Python
     try:
