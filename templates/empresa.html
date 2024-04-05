@@ -153,13 +153,13 @@
   <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
     <div class="px-6 py-4 bg-gradient-to-br from-emerald-200 to-emerald-100 shadow overflow-hidden rounded-md">
       <h3 class="text-xl font-semibold">Distribuição por Cor/Raça:</h3>
-      <div class="badge badge-outline badge-sm">🟨 Amarelo</div>
-      <div class="badge badge-outline badge-sm">⬜ Branco</div>
-      <div class="badge badge-outline badge-sm">🟥 Indígena</div>
-      <div class="badge badge-outline badge-sm">🟫 Pardo</div>
-      <div class="badge badge-outline badge-sm">⬛ Preto</div>
-      <div class="badge badge-outline badge-sm">🔵 Outro</div>
-      <div class="badge badge-outline badge-sm">❔ Não respondeu</div>
+      <span class="inline-block text-xsm pr-2">🟨 Amarelo</span>
+      <span class="inline-block text-xsm pr-2">⬜ Branco</span>
+      <span class="inline-block text-xsm pr-2">🟥 Indígena</span>
+      <span class="inline-block text-xsm pr-2">🟫 Pardo</span>
+      <span class="inline-block text-xsm pr-2">⬛ Preto</span>
+      <span class="inline-block text-xsm pr-2">🔵 Outro</span>
+      <span class="inline-block text-xsm pr-2">❔ Não respondeu</span>
       {% for orgao, pictograma in pictogramas_cor_raca.items() %}
       <div class="mt-4">
         <h4 class="font-semibold">{{ orgao }}</h4>
@@ -169,11 +169,11 @@
     </div>
     <div class="px-6 py-4 bg-gradient-to-br from-emerald-200 to-emerald-100 shadow overflow-hidden rounded-md">
       <h3 class="text-xl font-semibold">Distribuição por Gênero:</h3>
-      <div class="badge badge-outline badge-sm">🔴 Feminino</div>
-      <div class="badge badge-outline badge-sm">🔵 Masculino</div>
-      <div class="badge badge-outline badge-sm">🟣 Não-binário</div>
-      <div class="badge badge-outline badge-sm">⚪ Outro</div>
-      <div class="badge badge-outline badge-sm">❔ Não respondeu</div>
+        <span class="inline-block text-xsm pr-2">🔴 Feminino</span>
+        <span class="inline-block text-xsm pr-2">🔵 Masculino</span>
+        <span class="inline-block text-xsm pr-2">🟣 Não-binário</span>
+        <span class="inline-block text-xsm pr-2">⚪ Outro</span>
+        <span class="inline-block text-xsm pr-2">❔ Não respondeu</span>
       {% for orgao, pictograma in pictogramas_genero.items() %}
       <div class="mt-4">
         <h4 class="font-semibold">{{ orgao }}</h4>
@@ -182,60 +182,142 @@
       {% endfor %}
     </div>
   </div>
+
   
   <h2 class="text-3xl md:text-4xl font-serif font-bold my-12 mb-4">Composição do quadro de funcionários</h2>
+
   <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
     <div class="px-6 py-4 bg-gradient-to-br from-emerald-200 to-emerald-100 shadow overflow-hidden rounded-md">
       <h3 class="text-xl font-semibold">Distribuição por Cor/Raça (%):</h3>
-      <div class="badge badge-outline badge-sm">🟨 Amarelo</div>
-      <div class="badge badge-outline badge-sm">⬜ Branco</div>
-      <div class="badge badge-outline badge-sm">🟥 Indígena</div>
-      <div class="badge badge-outline badge-sm">🟫 Pardo</div>
-      <div class="badge badge-outline badge-sm">⬛ Preto</div>
-      <div class="badge badge-outline badge-sm">🔵 Outro</div>
-      <div class="badge badge-outline badge-sm">❔ Não respondeu</div>
+      {% if pictogramas_rh_cor_raca %}
+        <span class="inline-block text-xsm pr-2">🟨 Amarelo</span>
+        <span class="inline-block text-xsm pr-2">⬜ Branco</span>
+        <span class="inline-block text-xsm pr-2">🟥 Indígena</span>
+        <span class="inline-block text-xsm pr-2">🟫 Pardo</span>
+        <span class="inline-block text-xsm pr-2">⬛ Preto</span>
+        <span class="inline-block text-xsm pr-2">🔵 Outro</span>
+        <span class="inline-block text-xsm pr-2">❔ Não respondeu</span>
       {% for descricao, dados in pictogramas_rh_cor_raca.items() %}
         <h4 class="font-semibold mt-4">{{ descricao }} (Total: {{ dados.total }})</h4>
         <p>{{ dados.pictograma }}</p>
+        {% if dados.detalhes %}
+        <ul class="list-none text-xsm py-2">
+          {% for chave, valor in dados.detalhes.items() if valor > 0 %}
+            <li class="inline-block">
+              {% if chave == 'PrefiroNaoResponder' %}
+                Não respondeu: {{ valor }}
+              {% else %}
+                {{ chave }}: {{ valor }}
+              {% endif %}
+              &emsp;</li>
+          {% endfor %}
+        </ul>
+        {% endif %}
       {% endfor %}
+      {% else %}
+      <p>Não há informações disponíveis.</p>
+      {% endif %}
     </div>
-
+  
     <div class="px-6 py-4 bg-gradient-to-br from-emerald-200 to-emerald-100 shadow overflow-hidden rounded-md">
       <h3 class="text-xl font-semibold">Distribuição por Gênero (%):</h3>
-      <div class="badge badge-outline badge-sm">🔴 Feminino</div>
-      <div class="badge badge-outline badge-sm">🔵 Masculino</div>
-      <div class="badge badge-outline badge-sm">🟣 Não-binário</div>
-      <div class="badge badge-outline badge-sm">⚪ Outro</div>
-      <div class="badge badge-outline badge-sm">❔ Não respondeu</div>
+      {% if pictogramas_rh_genero %}
+      <span class="inline-block text-xsm pr-2">🔴 Feminino</span>
+      <span class="inline-block text-xsm pr-2">🔵 Masculino</span>
+      <span class="inline-block text-xsm pr-2">🟣 Não-binário</span>
+      <span class="inline-block text-xsm pr-2">⚪ Outro</span>
+      <span class="inline-block text-xsm pr-2">❔ Não respondeu</span>
       {% for descricao, dados in pictogramas_rh_genero.items() %}
         <h4 class="font-semibold mt-4">{{ descricao }} (Total: {{ dados.total }})</h4>
         <p>{{ dados.pictograma }}</p>
+        {% if dados.detalhes %}
+        <ul class="list-none text-xsm py-2">
+          {% for chave, valor in dados.detalhes.items() if valor > 0 %}
+            <li class="inline-block">
+              {% if chave == 'NaoBinario' %}
+                Não-binário: {{ valor }}
+              {% elif chave == 'PrefiroNaoResponder' %}
+                Não respondeu: {{ valor }}
+              {% else %}
+                {{ chave }}: {{ valor }}
+              {% endif %}
+              &emsp;</li>
+          {% endfor %}
+        </ul>
+        {% endif %}
       {% endfor %}
+      {% else %}
+      <p>Não há informações disponíveis.</p>
+      {% endif %}
     </div>
 
     <div class="px-6 py-4 bg-gradient-to-br from-emerald-200 to-emerald-100 shadow overflow-hidden rounded-md">
       <h3 class="text-xl font-semibold">Distribuição por Faixa Etária (%):</h3>
-      <div class="badge badge-outline badge-sm">🐣 Abaixo de 30</div>
-      <div class="badge badge-outline badge-sm">🧑 30 a 50</div>
-      <div class="badge badge-outline badge-sm">🧓 Acima de 50</div>
+      {% if pictogramas_rh_idade %}
+      <span class="inline-block text-xsm pr-2">🐣 Abaixo de 30</span>
+      <span class="inline-block text-xsm pr-2">🧑 30 a 50</span>
+      <span class="inline-block text-xsm pr-2">🧓 Acima de 50</span>
       {% for descricao, dados in pictogramas_rh_idade.items() %}
         <h4 class="font-semibold mt-4">{{ descricao }} (Total: {{ dados.total }})</h4>
         <p>{{ dados.pictograma }}</p>
+        {% if dados.detalhes %}
+        <ul class="list-none text-xsm py-2">
+          {% for chave, valor in dados.detalhes.items() if valor > 0 %}
+            <li class="inline-block">
+              {% if chave == 'FaixaAbaixo30' %}
+                Abaixo de 30: {{ valor }}
+              {% elif chave == 'FaixaDe30a50' %}
+                De 30 a 50: {{ valor }}
+              {% elif chave == 'FaixaAcima50' %}
+                Acima de 50: {{ valor }}
+              {% elif chave == 'PrefiroNaoResponder' %}
+                Não respondeu: {{ valor }}
+              {% else %}
+                {{ chave }}: {{ valor }}
+              {% endif %}
+              &emsp;</li>
+          {% endfor %}
+        </ul>
+        {% endif %}
+
       {% endfor %}
+      {% else %}
+      <p>Não há informações disponíveis.</p>
+      {% endif %}
     </div>
 
     <div class="px-6 py-4 bg-gradient-to-br from-emerald-200 to-emerald-100 shadow overflow-hidden rounded-md">
       <h3 class="text-xl font-semibold">Distribuição por Região Geográfica (%):</h3>
-      <div class="badge badge-outline badge-sm">🟦 Norte</div>
-      <div class="badge badge-outline badge-sm">🟩 Nordeste</div>
-      <div class="badge badge-outline badge-sm">🟨 Centro-Oeste</div>
-      <div class="badge badge-outline badge-sm">🟪 Sudeste</div>
-      <div class="badge badge-outline badge-sm">🟥 Sul</div>
-      <div class="badge badge-outline badge-sm">🌍 Exterior</div>
+      {% if pictogramas_rh_regiao %}
+      <span class="inline-block text-xsm pr-2">🟦 Norte</span>
+      <span class="inline-block text-xsm pr-2">🟩 Nordeste</span>
+      <span class="inline-block text-xsm pr-2">🟨 Centro-Oeste</span>
+      <span class="inline-block text-xsm pr-2">🟪 Sudeste</span>
+      <span class="inline-block text-xsm pr-2">🟥 Sul</span>
+      <span class="inline-block text-xsm pr-2">🌍 Exterior</span>
       {% for descricao, dados in pictogramas_rh_regiao.items() %}
         <h4 class="font-semibold mt-4">{{ descricao }} (Total: {{ dados.total }})</h4>
         <p>{{ dados.pictograma }}</p>
+        {% if dados.detalhes %}
+        <ul class="list-none text-xsm py-2">
+          {% for chave, valor in dados.detalhes.items() if valor > 0 %}
+            <li class="inline-block">
+              {% if chave == 'CentroOeste' %}
+                Centro-Oeste: {{ valor }}
+              {% elif chave == 'PrefiroNaoResponder' %}
+                Não respondeu: {{ valor }}
+              {% else %}
+                {{ chave }}: {{ valor }}
+              {% endif %}
+              &emsp;</li>
+          {% endfor %}
+        </ul>
+        {% endif %}
+
       {% endfor %}
+      {% else %}
+      <p>Não há informações disponíveis.</p>
+      {% endif %}
     </div>
 </div>
 {% endblock %}

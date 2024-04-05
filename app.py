@@ -3,77 +3,22 @@ from pymongo import MongoClient
 from dotenv import load_dotenv
 import os
 
-# Carrega as variáveis de ambiente do arquivo .env
+
+# Importa funções para geração de pictogramas
+from pictogramas import gerar_pictogramas_por_orgao, gerar_pictogramas_proporcionais, calcular_totais_e_proporcoes, obter_e_gerar_pictogramas
+
+
+# Carrega variáveis de ambiente
 load_dotenv()  
 uri = os.getenv("MONGODB_URI")
 
 
-# Conectar ao MongoDB
+# Conecta ao MongoDB
 db = MongoClient(uri, ssl=True, tlsAllowInvalidCertificates=True).mjd_fehlauer
 collection = db['cvm_relatorios']
 
 
-# Definições do Flask
-app = Flask(__name__)
-
-@app.context_processor
-def inject_site_metadata():
-    return dict(
-        site_title="lupa(ESG)",
-        site_subtitle="Ambiente, Sociedade e Governança na ponta dos dados"
-    )
-
-# Funções auxiliares
-
-# Função para criar pictogramas a partir dos dados de raça/cor e gênero de órgãos administrativos
-def gerar_pictogramas_por_orgao(dados_orgao, emojis):
-    pictogramas = {}
-    for orgao in dados_orgao:
-        if orgao.get('NaoSeAplica', 'false') == 'false':
-            pictograma = ""
-            for categoria, valor in orgao.items():
-                if categoria in emojis and valor.isdigit():
-                    pictograma += (emojis[categoria] + " ") * int(valor)
-            if pictograma:  # Garante que não adicionaremos órgãos vazios
-                pictogramas[orgao['OrgaoAdministracao']] = pictograma
-    return pictogramas
-
-# Função para calcular totais e proporções de valores para número de funcionários
-def calcular_totais_e_proporcoes(dados_orgao):
-    resultados = []
-    for orgao in dados_orgao:
-        # Calcular o total somente se o valor for numérico (após remover os pontos) e não estiver na lista de exceções
-        total = sum(int(valor.replace('.', '')) for chave, valor in orgao.items() if chave not in ['DescricaoInformacao', 'NaoSeAplica'] and valor.replace('.', '').isdigit())
-
-        # Calcular as proporções da mesma forma, garantindo que os valores sejam numéricos e válidos
-        proporcoes = {chave: int(valor.replace('.', '')) / total for chave, valor in orgao.items() if chave not in ['DescricaoInformacao', 'NaoSeAplica'] and valor.replace('.', '').isdigit() and total > 0}
-
-        resultados.append({
-            'descricao': orgao['DescricaoInformacao'],
-            'total': total,
-            'proporcoes': proporcoes
-        })
-    return resultados
-
-# Função para gerar pictogramas proporcionais a partir dos dados dos funcionários
-def gerar_pictogramas_proporcionais(dados_orgao, emojis, max_emojis=100):
-    pictogramas = {}
-    dados_proporcoes = calcular_totais_e_proporcoes(dados_orgao)
-    for dado in dados_proporcoes:
-        pictograma = ""
-        for categoria, proporcao in dado['proporcoes'].items():
-            num_emojis = round(proporcao * max_emojis)
-            pictograma += (emojis.get(categoria, '❔') + " ") * num_emojis
-        if pictograma:
-            pictogramas[dado['descricao']] = {
-                'pictograma': pictograma.strip(),
-                'total': dado['total']
-            }
-    return pictogramas
-
-
-
-# Variáveis que armazenam valores a serem passados para os templates
+# Variáveis a serem passados para os templates
 emojis_genero = {
     'Masculino': '🔵',
     'Feminino': '🔴',
@@ -108,7 +53,6 @@ emojis_regiao = {
     'Exterior': '🌍'
 }
 
-
 ods_descricao = {
     1: "Erradicação da Pobreza",
     2: "Fome Zero e Agricultura Sustentável",
@@ -136,7 +80,17 @@ escopos = {
 }
 
 
-# Rotas do Flask
+
+# Definições e rotas do Flask
+app = Flask(__name__)
+
+@app.context_processor
+def inject_site_metadata():
+    return dict(
+        site_title="lupa(ESG)",
+        site_subtitle="Ambiente, Sociedade e Governança na ponta dos dados"
+    )
+
 @app.route('/')
 def home():
     return render_template('home.html')
@@ -159,35 +113,6 @@ def busca_empresas():
         suggestions = [{"name": result['Nome_Companhia'], "slug": result.get('Codigo_CVM', '')} for result in search_results]
         return jsonify(suggestions)
     return jsonify([])
-
-
-@app.route('/empresa/<int:codigo_cvm>')
-def empresa(codigo_cvm):
-    documentos_empresa = list(collection.find({"Codigo_CVM": codigo_cvm}).sort("Data_Referencia", -1))
-    if documentos_empresa:
-        
-        dados_cor_raca = documentos_empresa[0]['DescricaoCaracteristicasOrgaosAdmECF']['DescricaoCorRaca']['XmlFormularioReferenciaDadosFREFormularioAssembleiaGeralEAdmDescricaoCaracteristicasOrgaosAdmECFCorRaca']
-        pictogramas_cor_raca = gerar_pictogramas_por_orgao(dados_cor_raca, emojis_cor_raca)
-
-        dados_genero = documentos_empresa[0]['DescricaoCaracteristicasOrgaosAdmECF']['DescricaoGenero']['XmlFormularioReferenciaDadosFREFormularioAssembleiaGeralEAdmDescricaoCaracteristicasOrgaosAdmECFGenero']
-        pictogramas_genero = gerar_pictogramas_por_orgao(dados_genero, emojis_genero)
-
-        dados_rh_cor_raca = documentos_empresa[0]['DescricaoRHEmissor']['DescricaoCorRaca']['XmlFormularioReferenciaDadosFREFormularioRecursosHumanosDescricaoRHEmissorCorRaca']
-        pictogramas_rh_cor_raca = gerar_pictogramas_proporcionais(dados_rh_cor_raca, emojis_cor_raca)
-
-        dados_rh_genero = documentos_empresa[0]['DescricaoRHEmissor']['DescricaoGenero']['XmlFormularioReferenciaDadosFREFormularioRecursosHumanosDescricaoRHEmissorGenero']
-        pictogramas_rh_genero = gerar_pictogramas_proporcionais(dados_rh_genero, emojis_genero)
-
-        dados_rh_idade = documentos_empresa[0]['DescricaoRHEmissor']['DescricaoFaixaEtaria']['XmlFormularioReferenciaDadosFREFormularioRecursosHumanosDescricaoRHEmissorFaixaEtaria']
-        pictogramas_rh_idade = gerar_pictogramas_proporcionais(dados_rh_idade, emojis_faixa_etaria)
-
-        dados_rh_regiao = documentos_empresa[0]['DescricaoRHEmissor']['DescricaoLocalizacaoGeografica']['XmlFormularioReferenciaDadosFREFormularioRecursosHumanosDescricaoRHEmissorLocalizacaoGeografica']
-        pictogramas_rh_regiao = gerar_pictogramas_proporcionais(dados_rh_regiao, emojis_regiao)
-
-        return render_template('empresa.html', documentos=documentos_empresa, pictogramas_cor_raca=pictogramas_cor_raca, pictogramas_genero=pictogramas_genero, ods_descricao=ods_descricao, escopos=escopos, pictogramas_rh_cor_raca=pictogramas_rh_cor_raca, pictogramas_rh_genero=pictogramas_rh_genero, pictogramas_rh_idade=pictogramas_rh_idade, pictogramas_rh_regiao=pictogramas_rh_regiao)
-
-    else:
-        abort(404)
 
 
 @app.route('/lista-empresas')
@@ -218,5 +143,90 @@ def relatorios_esg():
     # Passa a lista filtrada para o template
     return render_template('relatorios.html', empresas=empresas_com_url)
 
+
+@app.route('/empresa/<int:codigo_cvm>')
+def empresa(codigo_cvm):
+    documentos_empresa = list(collection.find({"Codigo_CVM": codigo_cvm}).sort("Data_Referencia", -1))
+    if not documentos_empresa:
+        abort(404)
+
+    contexto = {'documentos': documentos_empresa}
+
+    # Função auxiliar para verificar e obter dados de um caminho de chaves
+    def obter_dados(documento, caminho):
+        atual = documento
+        for chave in caminho:
+            if isinstance(atual, dict) and chave in atual:
+                atual = atual[chave]
+            else:
+                return None
+        if isinstance(atual, list) and all(isinstance(item, dict) for item in atual):
+            return atual
+        else:
+            return None
+
+    caminhos_pictogramas = [
+        (
+            'DescricaoCaracteristicasOrgaosAdmECF', 
+            'DescricaoCorRaca', 
+            'XmlFormularioReferenciaDadosFREFormularioAssembleiaGeralEAdmDescricaoCaracteristicasOrgaosAdmECFCorRaca', 
+            gerar_pictogramas_por_orgao, 
+            emojis_cor_raca,
+            'pictogramas_cor_raca'
+        ),
+        (
+            'DescricaoCaracteristicasOrgaosAdmECF', 
+            'DescricaoGenero', 
+            'XmlFormularioReferenciaDadosFREFormularioAssembleiaGeralEAdmDescricaoCaracteristicasOrgaosAdmECFGenero', 
+            gerar_pictogramas_por_orgao, 
+            emojis_genero,
+            'pictogramas_genero'
+        ),
+        (
+            'DescricaoRHEmissor', 
+            'DescricaoCorRaca', 
+            'XmlFormularioReferenciaDadosFREFormularioRecursosHumanosDescricaoRHEmissorCorRaca', 
+            gerar_pictogramas_proporcionais, 
+            emojis_cor_raca,
+            'pictogramas_rh_cor_raca'
+        ),
+        (
+            'DescricaoRHEmissor', 
+            'DescricaoGenero', 
+            'XmlFormularioReferenciaDadosFREFormularioRecursosHumanosDescricaoRHEmissorGenero', 
+            gerar_pictogramas_proporcionais, 
+            emojis_genero,
+            'pictogramas_rh_genero'
+        ),
+        (
+            'DescricaoRHEmissor', 
+            'DescricaoFaixaEtaria', 
+            'XmlFormularioReferenciaDadosFREFormularioRecursosHumanosDescricaoRHEmissorFaixaEtaria', 
+            gerar_pictogramas_proporcionais, 
+            emojis_faixa_etaria,
+            'pictogramas_rh_idade'
+        ),
+        (
+            'DescricaoRHEmissor', 
+            'DescricaoLocalizacaoGeografica', 
+            'XmlFormularioReferenciaDadosFREFormularioRecursosHumanosDescricaoRHEmissorLocalizacaoGeografica', 
+            gerar_pictogramas_proporcionais, 
+            emojis_regiao,
+            'pictogramas_rh_regiao'
+        ),
+    ]
+
+    for caminho in caminhos_pictogramas:
+        chave_dados, chave_dados_intermediario, chave_final, funcao_geradora, emojis, chave_template = caminho
+        dados_pictogramas = obter_dados(documentos_empresa[0], [chave_dados, chave_dados_intermediario, chave_final])
+        if dados_pictogramas:
+            contexto[chave_template] = funcao_geradora(dados_pictogramas, emojis)
+
+    return render_template('empresa.html', **contexto, ods_descricao=ods_descricao, escopos=escopos)
+
+
+
 if __name__ == '__main__':
     app.run(debug=True)
+
+
