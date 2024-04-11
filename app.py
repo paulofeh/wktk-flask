@@ -1,24 +1,33 @@
+"""
+O projeto lupa(ESG) é uma aplicação web que permite a busca e visualização de informações sobre a pauta ESG de empresas listadas na CVM (Comissão de Valores Mobiliários). 
+Autor: Paulo Fehlauer
+Data: 2024-04-11
+Versão: 0.1
+Licença: MIT
+
+Este arquivo contém o código principal da aplicação web, construída com Flask e TailwindCSS.
+"""
+
+
+# Importa bibliotecas
 from flask import Flask, render_template, request, jsonify, abort
 from pymongo import MongoClient
 from dotenv import load_dotenv
 import os
 
-
 # Importa funções para geração de pictogramas
 from pictogramas import gerar_pictogramas_por_orgao, gerar_pictogramas_proporcionais, calcular_totais_e_proporcoes, obter_e_gerar_pictogramas
-
 
 # Carrega variáveis de ambiente
 load_dotenv()  
 uri = os.getenv("MONGODB_URI")
-
 
 # Conecta ao MongoDB
 db = MongoClient(uri, ssl=True, tlsAllowInvalidCertificates=True).mjd_fehlauer
 collection = db['cvm_relatorios']
 
 
-# Variáveis a serem passados para os templates
+# Variáveis a serem passadas para os templates
 emojis_genero = {
     'Masculino': '🔵',
     'Feminino': '🔴',
@@ -80,16 +89,17 @@ escopos = {
 }
 
 
-
 # Definições e rotas do Flask
 app = Flask(__name__)
 
+# Função para injetar metadados do site nos templates
 @app.context_processor
 def inject_site_metadata():
     return dict(
         site_title="lupa(ESG)",
-        site_subtitle="Ambiente, Sociedade e Governança na ponta dos dados"
-    )
+        site_subtitle="Ambiente, Sociedade e Governança na ponta dos dados",
+        site_meta_description="Plataforma que busca e organiza informações públicas fornecidas por empresas brasileiras sobre práticas relacionadas à pauta ESG - Ambiental, Social e Governança."
+        )
 
 @app.route('/')
 def home():
