@@ -235,7 +235,6 @@ def empresa(codigo_cvm):
     return render_template('empresa.html', **contexto, ods_descricao=ods_descricao, escopos=escopos)
 
 
-
 if __name__ == '__main__':
     app.run(debug=True)
 

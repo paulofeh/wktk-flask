@@ -188,7 +188,7 @@ for registro in relatorios:
                             prompt = prompts_por_tag[tag]  # Acessa o prompt específico para a tag atual
                             respostas_openai = openai_chat(openai_api_key, prompt, texto_pdf)
                             dados_openai[tag] = respostas_openai
-                            os.remove(pdf_path) # Apaga o arquivo PDF temporário
+                            os.remove(pdf_path) # Apaga o arquivo PDF temporário (futuramente o arquivo pode ser salvo e disponibilizado para referência)
 
                     # Combina os dicionários para inserção/atualização no MongoDB
                     dados_db = {**dados_empresa, **dados_ajustados, **dados_openai}
