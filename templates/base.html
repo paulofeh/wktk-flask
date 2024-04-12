@@ -5,10 +5,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}{% endblock %}</title>
     <meta name="description" content="{{ site_meta_description }}" />
+
+    <!-- Facebook Meta Tags -->
+    <meta property="og:url" content="https://lupa-esg.onrender.com/">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="lupa(ESG) | Ambiente, Sociedade e Governança na ponta dos dados">
+    <meta property="og:description" content="Plataforma que busca e organiza informações públicas fornecidas por empresas brasileiras sobre práticas relacionadas à pauta ESG - Ambiental, Social e Governança.">
+    <meta property="og:image" content="https://opengraph.b-cdn.net/production/documents/71081614-6d0b-4633-bbbf-dc70de53ea02.png?token=9znMmNIceRTgnPxMjnF2e9r9tQhmYyc9Nq-kJ-qZWvg&height=630&width=1200&expires=33248957536">
+
+    <!-- Twitter Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta property="twitter:domain" content="lupa-esg.onrender.com">
+    <meta property="twitter:url" content="https://lupa-esg.onrender.com/">
+    <meta name="twitter:title" content="lupa(ESG) | Ambiente, Sociedade e Governança na ponta dos dados">
+    <meta name="twitter:description" content="Plataforma que busca e organiza informações públicas fornecidas por empresas brasileiras sobre práticas relacionadas à pauta ESG - Ambiental, Social e Governança.">
+    <meta name="twitter:image" content="https://opengraph.b-cdn.net/production/documents/71081614-6d0b-4633-bbbf-dc70de53ea02.png?token=9znMmNIceRTgnPxMjnF2e9r9tQhmYyc9Nq-kJ-qZWvg&height=630&width=1200&expires=33248957536">
+
+    <!-- Meta Tags Generated via https://www.opengraph.xyz -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/output.css') }}">
+
     <style>
         .custom-placeholder::placeholder {
             color: #022C22; /* Esta é a cor correspondente a text-emerald-950 no Tailwind CSS */
