@@ -18,7 +18,7 @@ def openai_chat(openai_api_key, prompt, texto_pdf):
     client = OpenAI(api_key = openai_api_key)
 
     chat = client.chat.completions.create(
-            model="gpt-4-0125-preview", 
+            model="gpt-4o", 
             temperature = 0,
             response_format={ "type": "json_object" },
             messages=[
