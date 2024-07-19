@@ -65,25 +65,34 @@ def extrair_pdf_de_xml(caminho_xml, codigo_cvm, tag_de_interesse):
         return False, None
 
 
-def pdf_para_string(caminho_pdf):
+def pdf_para_string(caminho_pdf, max_tokens=25000):
     """
-    Função para extrair texto de um arquivo PDF.
+    Função para extrair texto de um arquivo PDF e limitar o número de tokens.
     caminho_pdf: caminho do arquivo PDF a ser processado.
-    Retorna o texto extraído do PDF.
+    max_tokens: número máximo de tokens por segmento de texto.
+    Retorna uma lista de segmentos de texto, cada um dentro do limite de tokens.
     """
-
-    # Abre o arquivo PDF
     pdf_document = fitz.open(caminho_pdf)
-
-    # Inicializa a string de texto
-    texto_pdf = ''
+    texto_total = []
+    texto_segmento = ""
 
     # Itera por todas as páginas do documento
     for pagina_num in range(pdf_document.page_count):
         pagina = pdf_document.load_page(pagina_num)
-        texto_pagina = pagina.get_text()
-        
-        # Adiciona o texto da página atual ao texto total
-        texto_pdf += texto_pagina + ' '
+        texto_pagina = pagina.get_text("text")
+        palavras_pagina = texto_pagina.split()
 
-    return texto_pdf.strip()  # Retorna o texto extraído, removendo espaços extras no final
+        # Adiciona palavras da página atual ao segmento de texto, respeitando o limite de tokens
+        for palavra in palavras_pagina:
+            if len(texto_segmento + palavra + " ") <= max_tokens:
+                texto_segmento += palavra + " "
+            else:
+                # Adiciona o segmento completo ao texto total e começa um novo segmento
+                texto_total.append(texto_segmento)
+                texto_segmento = palavra + " "
+
+    # Adiciona o último segmento se houver algum texto remanescente
+    if texto_segmento:
+        texto_total.append(texto_segmento)
+
+    return texto_total  # Retorna a lista de segmentos de texto
