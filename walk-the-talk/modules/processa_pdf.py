@@ -65,7 +65,7 @@ def extrair_pdf_de_xml(caminho_xml, codigo_cvm, tag_de_interesse):
         return False, None
 
 
-def pdf_para_string(caminho_pdf, max_tokens=20000):
+def pdf_para_string(caminho_pdf, max_tokens=15000):
     """
     Função para extrair texto de um arquivo PDF, com um limite opcional de tokens.
     caminho_pdf: caminho do arquivo PDF a ser processado.
