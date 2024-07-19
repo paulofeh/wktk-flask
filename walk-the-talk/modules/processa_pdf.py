@@ -67,32 +67,34 @@ def extrair_pdf_de_xml(caminho_xml, codigo_cvm, tag_de_interesse):
 
 def pdf_para_string(caminho_pdf, max_tokens=25000):
     """
-    Função para extrair texto de um arquivo PDF e limitar o número de tokens.
+    Função para extrair texto de um arquivo PDF, com um limite opcional de tokens.
     caminho_pdf: caminho do arquivo PDF a ser processado.
-    max_tokens: número máximo de tokens por segmento de texto.
-    Retorna uma lista de segmentos de texto, cada um dentro do limite de tokens.
+    max_tokens: número máximo de tokens que a função deve retornar.
+    Retorna o texto extraído do PDF, limitado pelo número de tokens especificado.
     """
+
+    # Abre o arquivo PDF
     pdf_document = fitz.open(caminho_pdf)
-    texto_total = []
-    texto_segmento = ""
+
+    # Inicializa a string de texto
+    texto_pdf = ''
+    contador_tokens = 0
 
     # Itera por todas as páginas do documento
     for pagina_num in range(pdf_document.page_count):
         pagina = pdf_document.load_page(pagina_num)
-        texto_pagina = pagina.get_text("text")
+        texto_pagina = pagina.get_text()
         palavras_pagina = texto_pagina.split()
-
-        # Adiciona palavras da página atual ao segmento de texto, respeitando o limite de tokens
+        
+        # Adiciona palavras da página atual ao texto total, respeitando o limite de tokens
         for palavra in palavras_pagina:
-            if len(texto_segmento + palavra + " ") <= max_tokens:
-                texto_segmento += palavra + " "
+            if contador_tokens + 1 <= max_tokens:
+                texto_pdf += palavra + ' '
+                contador_tokens += 1
             else:
-                # Adiciona o segmento completo ao texto total e começa um novo segmento
-                texto_total.append(texto_segmento)
-                texto_segmento = palavra + " "
+                break  # Sai do loop se o limite de tokens for alcançado
 
-    # Adiciona o último segmento se houver algum texto remanescente
-    if texto_segmento:
-        texto_total.append(texto_segmento)
+        if contador_tokens >= max_tokens:
+            break  # Interrompe a extração de texto das páginas seguintes se o limite for atingido
 
-    return texto_total  # Retorna a lista de segmentos de texto
+    return texto_pdf.strip()  # Retorna o texto extraído, removendo espaços extras no final
